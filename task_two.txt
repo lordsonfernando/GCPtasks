@@ -1,0 +1,38 @@
+Steps for Building Highly available and scalable application using Managed instance Group
+
+1.Enable Managed Instance Group API and Compute engine API
+
+2.Create VPC .Configure firewall rules to allow HTTP traffic to the web application
+
+3.Create an instance template that launches the demo web application on startup
+  with startup script :
+    sudo apt update && sudo apt -y install git gunicorn3 python3-pip
+    git clone https://github.com/GoogleCloudPlatform/python-docs-samples.git
+    cd python-docs-samples/compute/managed-instances/demo
+    sudo pip3 install -r requirements.txt
+    sudo gunicorn3 --bind 0.0.0.0:80 app:app --daemon
+    
+
+4.Create a regional instance group(High Availability) to begin running the web application.
+
+.To Configuring the load balancer
+  5.1 Reserve a static IP address
+  5.2 Create a load balancer( Internet facing :From Internet to my VMs)
+       configure Backend (Create a health check :Under Port : 80) by setting Health criteria for Check interval,Timeout ,Healthy Threshold,Unhealthy Threshold
+       configure Frontend  with already created static IP address &  with Endpoint protocol  HTTP
+       
+
+6.Check External IP to view your application
+
+7.Simulate scale out by increasing the CPU utilization for your instances.Use can see new instances are getting created.
+
+export MACHINES=$(gcloud --project=$PROJECT_ID compute instances list --format="csv(name,networkInterfaces[0].accessConfigs[0].natIP)" | grep "vino-web-app-group")
+for i in $MACHINES;
+do
+  NAME=$(echo "$i" | cut -f1 -d,)
+  IP=$(echo "$i" | cut -f2 -d,)
+  echo "Simulating high load for instance $NAME"
+  curl -q -s "http://$IP/startLoad" >/dev/null --retry 2
+done
+
+
