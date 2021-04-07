@@ -1,0 +1,30 @@
+Steps to deploy application on compute engine VM instance using Deployment Manager
+Task-1:
+
+1. Enable deployment manager API and Compute engine API
+2. Created VPC and Configured firewall rules to allow port 80,22
+        machine:f1 micro
+	network: lordson-vpc
+	subnet: lordson-subnet
+	firewall:lordson-firewall
+
+3.Configured yaml configuration file for creating VM instance through Deployment Manager 
+
+4.SSH into VM
+
+5.Install Nginix on VM sudo apt install nginx
+
+Configure UFW/Firewall for Nginx sudo apt install ufw
+
+Allow connections to SSH and the ports for Nginx:
+
+sudo ufw allow ssh
+
+sudo ufw allow 'Nginx Full'
+
+sudo nano var/www/html/index.nginx-debian.html
+
+Enable UFW
+  sudo ufw enable
+
+Check External IP to view your application
