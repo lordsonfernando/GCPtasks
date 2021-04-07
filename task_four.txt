@@ -1,0 +1,29 @@
+steps to deploy app on appengine
+
+	created a repository lordson-repository
+		gcloud source repos create lordson-repository
+	cloned the repo and created application  files -- main.py app.yaml
+		gcloud source repos clone lordson-repository
+	added cloud.yaml file to build image
+		runtime: python27
+		api_version: 1
+		threadsafe: yes
+
+		handlers:
+		- url: .*
+		  script: main.app
+
+		libraries:
+		- name: webapp2
+ 		 version: "2.5.2"
+	commited the file to repository
+		git add .
+		git commit -m ""
+
+Trigger:
+ 	Nav to trigger page in the console
+	created build trigger whenever cloud build is created
+
+	made changes to main.py and commited the code to repository
+	it is automatically built and deployed
+	changes can be seen on the history of triggers page
